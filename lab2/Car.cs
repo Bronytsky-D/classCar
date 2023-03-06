@@ -47,10 +47,10 @@ namespace lab2
         public int CompareTo(object obj) 
         { 
             Car other = obj as Car;
-            double triger = this.initialCost - other.initialCost;
-            if (triger > 0.0)
+            double temp = this.initialCost - other.initialCost;
+            if (temp > 0.0)
                 return 1;
-            else if (triger < 0.0)
+            else if (temp < 0.0)
                 return -1;
             else 
                 return -1;
@@ -63,6 +63,14 @@ namespace lab2
         {
             return first.CompareTo(other) < 0;
         }
+        public static bool operator ==(Car first, Car other)
+        {
+            return first.Equals(other); 
+        }
 
+        public static bool operator !=(Car first, Car other)
+        {
+            return !(first == other); 
+        }
     }
 }

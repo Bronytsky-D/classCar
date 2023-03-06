@@ -11,10 +11,10 @@ namespace lab2
         static void Main(string[] args)
         {
             Car c = new Car("bmw",2000,5);
-            Car w = new Car("mercedes", 1500, 4);
+            Car w = new Car("mercedes", 2000, 4);
             Console.WriteLine(c);
             Console.WriteLine(w);
-            bool triger = c<w;
+            bool triger = c==w;
             Console.WriteLine(triger);
         }
     }
