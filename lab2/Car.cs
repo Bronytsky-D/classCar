@@ -10,19 +10,38 @@ using System.Threading.Tasks;
 
 namespace lab2
 {
+    public enum modelCar 
+    {
+        nonExistent=0,
+        Lada =1,
+        Camri=2,
+        Sedan=3,
+        SUV=4,
+        Hatchback=5,
+        Coupe=6,
+        Convertible=7
+    }
+    public enum firmTaxi 
+    {
+        None=0,
+        Uber = 1, 
+        Uklon = 2,
+        Bolt = 3
+    }
+
     public class Car: IComparable
     {
-        private string model;
+        private modelCar model;
         private double initialCost;
         private uint serviceYear; 
-        public string Model { get { return model; } set { model = value; } }
+        public modelCar Model { get { return model; } set { model = value; } }
         public double InitialCost { get { return initialCost; } set { initialCost = value; } }
         public uint ServiceYear { get { return serviceYear; } set { serviceYear = value; } }
         public Car() 
         {
-            model = string.Empty; initialCost = 0.0; serviceYear = 0; 
+            model = 0; initialCost = 0.0; serviceYear = 0; 
         }
-        public Car(string _model, double _initialCost, uint _serviceYear)
+        public Car(modelCar _model, double _initialCost, uint _serviceYear)
         {
             this.model = _model;
             this.initialCost = _initialCost;
@@ -36,7 +55,7 @@ namespace lab2
         }
         public override string ToString()
         {
-            return $"Car model {model},{serviceYear} year(s),cost {appraisedCost}-usd";
+            return $"Car model {model},{serviceYear} year(s),cost {appraisedCost:F2}-usd";
         }
         public double appraisedCost 
         {
@@ -64,6 +83,22 @@ namespace lab2
             else 
                 return -1;
         }
+        public static Car operator +(Car first,uint _year)
+        {
+            return new Car(first.model,first.initialCost ,first.serviceYear + _year);
+        }
+        public static Car operator -(Car first, uint _year)
+        {
+            return new Car(first.model, first.initialCost, first.serviceYear -_year);
+        }
+        public static Car operator *(Car first, uint _year)
+        {
+            return new Car(first.model, first.initialCost, first.serviceYear * _year);
+        }
+        public static Car operator /(Car first, uint _year)
+        {
+            return new Car(first.model, first.initialCost, first.serviceYear / _year);
+        }
         public static bool operator>(Car first, Car other)
         {
             return first.CompareTo(other) >0;
@@ -84,24 +119,24 @@ namespace lab2
     }
     public class Taxi: Car
     {
-        private string firm;
-        private uint k;
+        private firmTaxi firm;
+        private double k;
         public Taxi(): base()
         {
-            firm= string.Empty; k = 1;
+            firm= 0; k = 1;
         }
-        public Taxi(string _model, double _initialCost, uint _serviceYear, string _firm,uint _k):base(_model, _initialCost, _serviceYear)
+        public Taxi(modelCar _model, double _initialCost, uint _serviceYear, firmTaxi _firm):base(_model, _initialCost, _serviceYear)
         {
-            firm = _firm; k = _k;
+            firm = _firm; k = (uint)_firm /2 ;
         }
-        public Taxi(Car c,string _firm,uint _k):base(c)
+        public Taxi(Car c,firmTaxi _firm):base(c)
         {
             firm = _firm;
-            k = _k;
+            k = (uint)_firm /2;
         }  
         public override string ToString()
         {
-            return base.ToString() + $" ,taxi appraised cost-{appraisedCost},taxi firma - {firm}";
+            return $"Car model {Model},{ServiceYear} year(s),taxi appraised cost-{appraisedCost:F2},taxi firma - {firm}";
         }
         public new double appraisedCost
         {
