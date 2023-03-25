@@ -10,36 +10,36 @@ using System.Threading.Tasks;
 
 namespace lab2
 {
-    public enum modelCar 
+    public enum modelCar
     {
-        nonExistent=0,
-        Lada =1,
-        Camri=2,
-        Sedan=3,
-        SUV=4,
-        Hatchback=5,
-        Coupe=6,
-        Convertible=7
+        nonExistent,
+        Lada,
+        Camri,
+        Sedan,
+        SUV,
+        Hatchback,
+        Coupe,
+        Convertible
     }
-    public enum firmTaxi 
+    public enum firmTaxi
     {
-        None=0,
-        Uber = 1, 
-        Uklon = 2,
-        Bolt = 3
+        None ,
+        Uber,
+        Uklon,
+        Bolt 
     }
 
-    public class Car: IComparable
+    public class Car : IComparable
     {
         private modelCar model;
         private double initialCost;
-        private uint serviceYear; 
+        private uint serviceYear;
         public modelCar Model { get { return model; } set { model = value; } }
         public double InitialCost { get { return initialCost; } set { initialCost = value; } }
         public uint ServiceYear { get { return serviceYear; } set { serviceYear = value; } }
-        public Car() 
+        public Car()
         {
-            model = 0; initialCost = 0.0; serviceYear = 0; 
+            model = 0; initialCost = 0.0; serviceYear = 0;
         }
         public Car(modelCar _model, double _initialCost, uint _serviceYear)
         {
@@ -57,13 +57,13 @@ namespace lab2
         {
             return $"Car model {model},{serviceYear} year(s),cost {appraisedCost:F2}-usd";
         }
-        public double appraisedCost 
+        public double appraisedCost
         {
             get
             {
                 double temp = initialCost;
                 for (int i = 0; i < serviceYear; i++)
-                    temp-=(temp * 0.1);
+                    temp -= (temp * 0.1);
                 return temp;
             }
         }
@@ -72,24 +72,24 @@ namespace lab2
             Car other = obj as Car;
             return this.initialCost == other.initialCost;
         }
-        public int CompareTo(object obj) 
-        { 
+        public int CompareTo(object obj)
+        {
             Car other = obj as Car;
             double temp = this.initialCost - other.initialCost;
             if (temp > 0.0)
                 return 1;
             else if (temp < 0.0)
                 return -1;
-            else 
+            else
                 return -1;
         }
-        public static Car operator +(Car first,uint _year)
+        public static Car operator +(Car first, uint _year)
         {
-            return new Car(first.model,first.initialCost ,first.serviceYear + _year);
+            return new Car(first.model, first.initialCost, first.serviceYear + _year);
         }
         public static Car operator -(Car first, uint _year)
         {
-            return new Car(first.model, first.initialCost, first.serviceYear -_year);
+            return new Car(first.model, first.initialCost, first.serviceYear - _year);
         }
         public static Car operator *(Car first, uint _year)
         {
@@ -99,9 +99,9 @@ namespace lab2
         {
             return new Car(first.model, first.initialCost, first.serviceYear / _year);
         }
-        public static bool operator>(Car first, Car other)
+        public static bool operator >(Car first, Car other)
         {
-            return first.CompareTo(other) >0;
+            return first.CompareTo(other) > 0;
         }
         public static bool operator <(Car first, Car other)
         {
@@ -109,30 +109,32 @@ namespace lab2
         }
         public static bool operator ==(Car first, Car other)
         {
-            return first.Equals(other); 
+            return first.Equals(other);
         }
 
         public static bool operator !=(Car first, Car other)
         {
-            return !(first == other); 
+            return !(first == other);
         }
     }
+
     public class Taxi: Car
     {
+        public static Dictionary<string, double> coefficients = new Dictionary<string, double>{{ "Low", 1.2 },{ "Midl", 1.5 },{ "High", 1.8 }};
         private firmTaxi firm;
         private double k;
         public Taxi(): base()
         {
             firm= 0; k = 1;
         }
-        public Taxi(modelCar _model, double _initialCost, uint _serviceYear, firmTaxi _firm):base(_model, _initialCost, _serviceYear)
+        public Taxi(modelCar _model, double _initialCost, uint _serviceYear, firmTaxi _firm, string _coef):base(_model, _initialCost, _serviceYear)
         {
-            firm = _firm; k = (uint)_firm /2 ;
+            firm = _firm; k = coefficients[_coef] ;
         }
-        public Taxi(Car c,firmTaxi _firm):base(c)
+        public Taxi(Car c,firmTaxi _firm, string _coef) :base(c)
         {
             firm = _firm;
-            k = (uint)_firm /2;
+            k = coefficients[_coef];
         }  
         public override string ToString()
         {
