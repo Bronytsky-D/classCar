@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -29,7 +30,7 @@ namespace lab2
         Bolt 
     }
 
-    public class Car : IComparable
+    public class Car : IComparable, IFormattable
     {
         private modelCar model;
         private double initialCost;
@@ -55,7 +56,23 @@ namespace lab2
         }
         public override string ToString()
         {
-            return $"Car model {model},{serviceYear} year(s),cost {appraisedCost:F2}-usd";
+            return $"Car model: {Model}, price: {initialCost:C}, service year: {serviceYear}";
+        }
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            if (format == null)
+            {
+                return ToString();
+            }
+            switch (format.ToUpper())
+            {
+                case "C":
+                    return $"Car model {model},{serviceYear} year(s),cost {appraisedCost:C}";
+                case "N":
+                    return $"Car model {model},{serviceYear} year(s),cost {appraisedCost:N2}-usd";
+                default:
+                    throw new FormatException($"The '{format}' format string is not supported.");
+            }
         }
         public double appraisedCost
         {
@@ -135,10 +152,25 @@ namespace lab2
         {
             firm = _firm;
             k = coefficients[_coef];
-        }  
+        }
         public override string ToString()
         {
-            return $"Car model {Model},{ServiceYear} year(s),taxi appraised cost-{appraisedCost:F2},taxi firma - {firm}";
+            return ToString("G", CultureInfo.CurrentCulture);
+        }
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            if (string.IsNullOrEmpty(format)) format = "G";
+            switch (format.ToUpperInvariant())
+            {
+                case "G":
+                    return $"Car model {Model}, {ServiceYear} year(s), taxi appraised cost - {appraisedCost:F2}, taxi firma - {firm}";
+                case "C":
+                    return $"Taxi company: {firm}";
+                case "N":
+                    return $"Taxi appraised cost: {appraisedCost:F2}";
+                default:
+                    throw new FormatException($"The '{format}' format specifier is not supported.");
+            }
         }
         public new double appraisedCost
         {

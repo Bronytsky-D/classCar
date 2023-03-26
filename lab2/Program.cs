@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,34 +13,51 @@ namespace lab2
     {
         static void Main(string[] args)
         {
-            Car c = new Car(modelCar.Camri,200000,5);
-            Car w = new Car(modelCar.SUV,20001,2);
-            Taxi t = new Taxi(modelCar.Sedan, 2000, 5, firmTaxi.Uber,"Midl");
-            Taxi d = new Taxi(modelCar.Camri, 150, 5,firmTaxi.Bolt,"Low");
-            Taxi x = new Taxi(w,firmTaxi.Uklon,"Low");
+            Car c = new Car(modelCar.Camri, 200000, 5);
+            Car w = new Car(modelCar.SUV, 20001, 2);
+            Taxi t = new Taxi(modelCar.Sedan, 2000, 5, firmTaxi.Uber, "Midl");
+            Taxi d = new Taxi(modelCar.Camri, 1500, 5, firmTaxi.Bolt, "Low");
+            Taxi x = new Taxi(w, firmTaxi.Uklon, "Low");
+
             Car[] arrCar = new Car[5] { c, w, t, d, x };
+
+            // Testing ToString() implementation
+            Console.WriteLine(d.ToString("C", new CultureInfo("en-US")));
+            Console.WriteLine(d.ToString("N", new CultureInfo("en-US")));
+            Console.WriteLine(d.ToString("G", new CultureInfo("en-US")));
+
             Console.WriteLine(c);
             Console.WriteLine(w);
-            bool triger = c==w;
+
+            bool triger = c == w;
             Console.WriteLine(triger);
+
             Console.WriteLine(d);
             Console.WriteLine(t);
+
             bool trig = t > d;
             Console.WriteLine(trig);
+
             Car a = cheapestCar(arrCar);
             Console.WriteLine($"найдешевше авто --{a}");
+
             WriteArrCar(arrCar);
+
             Car a1 = ReadCar();
             Console.WriteLine(a1);
-            if(a1 is Taxi)
+
+            if (a1 is Taxi)
                 Console.WriteLine("yes");
             else
                 Console.WriteLine("no");
+
             increaseServiceYearInARR(arrCar, 3);
+
             WriteArrCar(arrCar);
             Console.WriteLine("\n");
-            //вивід нової колекйії 
-            Dictionary<modelCar,Car> myDictionary = arrayWithoutRepetitions(arrCar);
+
+            Dictionary<modelCar, Car> myDictionary = arrayWithoutRepetitions(arrCar);
+
             foreach (KeyValuePair<modelCar, Car> kvp in myDictionary)
             {
                 Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
