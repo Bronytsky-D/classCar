@@ -32,12 +32,21 @@ namespace lab2
 
     public class Car : IComparable, IFormattable
     {
+
         private modelCar model;
         private double initialCost;
         private uint serviceYear;
         public modelCar Model { get { return model; } set { model = value; } }
         public double InitialCost { get { return initialCost; } set { initialCost = value; } }
-        public uint ServiceYear { get { return serviceYear; } set { serviceYear = value; } }
+        public uint ServiceYear
+        {
+            get { return serviceYear; }
+            set
+            {
+                serviceYear = value;
+                checkAgeForInspection();
+            }
+        }
         public Car()
         {
             model = 0; initialCost = 0.0; serviceYear = 0;
@@ -56,7 +65,7 @@ namespace lab2
         }
         public override string ToString()
         {
-            return $"Car model: {Model}, price: {initialCost:C}, service year: {serviceYear}";
+            return $"Car model: {Model}, price: {appraisedCost:C}, service year: {serviceYear}";
         }
         public string ToString(string format, IFormatProvider formatProvider)
         {
@@ -101,8 +110,10 @@ namespace lab2
                 return -1;
         }
         public static Car operator +(Car first, uint _year)
-        {
-            return new Car(first.model, first.initialCost, first.serviceYear + _year);
+        {// ???? 
+            Car c = new Car(first.model, first.initialCost, first.serviceYear + _year);
+            c.checkAgeForInspection();
+            return c;
         }
         public static Car operator -(Car first, uint _year)
         {
@@ -132,6 +143,22 @@ namespace lab2
         public static bool operator !=(Car first, Car other)
         {
             return !(first == other);
+        }
+
+        public delegate void ServiceYearEventHandler(object sender, ServiceYearEventArgs e);
+        public event ServiceYearEventHandler ServiceYearChanged;
+
+        private void checkAgeForInspection()
+        {
+            if (serviceYear % 3 == 0)
+            {
+                OnServiceYearChanged(new ServiceYearEventArgs(serviceYear));
+            }
+        }
+
+        protected virtual void OnServiceYearChanged(ServiceYearEventArgs e)
+        {
+            ServiceYearChanged?.Invoke(this, e);
         }
     }
 
@@ -182,6 +209,14 @@ namespace lab2
                 return temp;
             }
         }
+    }
+    public class ServiceYearEventArgs : EventArgs
+    {
+        public uint ServiceYear { get; set; }
 
+        public ServiceYearEventArgs(uint serviceYear)
+        {
+            ServiceYear = serviceYear;
+        }
     }
 }

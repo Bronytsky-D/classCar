@@ -38,9 +38,13 @@ namespace lab2
             bool trig = t > d;
             Console.WriteLine(trig);
 
+            WriteArrCar(arrCar);
             Car a = cheapestCar(arrCar);
             Console.WriteLine($"найдешевше авто --{a}");
-
+            for(int i = 0 ; i < 5; i++)
+            {
+                arrCar[i] += 2;
+            }
             WriteArrCar(arrCar);
 
             Car a1 = ReadCar();
@@ -58,10 +62,23 @@ namespace lab2
 
             Dictionary<modelCar, Car> myDictionary = arrayWithoutRepetitions(arrCar);
 
-            foreach (KeyValuePair<modelCar, Car> kvp in myDictionary)
+            foreach (KeyValuePair<modelCar, Car> elem in myDictionary)
             {
-                Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+                Console.WriteLine($"Key = {elem.Key}, Value = {elem.Value}");
             }
+            CarOwner cheapedCarOwner = new CarOwner();
+            Console.WriteLine(a);
+            a.ServiceYearChanged += cheapedCarOwner.InspectCar;
+            a.ServiceYear = 9;
+            Console.WriteLine(a);
+            CarOwner anotherOwner = new CarOwner();
+            a1.ServiceYearChanged += anotherOwner.InspectCar;
+            for (int i = 1; i < 5; i++)
+            {
+                a1.ServiceYear = (uint)(4 * i);
+                Console.WriteLine(a1);
+            }
+        
         }
         //  Знаходження найдешевшого авто
         public static Car cheapestCar(Car[] arrCar)
